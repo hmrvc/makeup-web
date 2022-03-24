@@ -24,6 +24,15 @@ const userController = {
   },
   signInPage: (req, res, next) => {
     res.render('signin')
+  },
+  signIn: (req, res, next) => {
+    req.flash('success_messages', '成功登入')
+    res.redirect('/products')
+  },
+  logout: (req, res, next) => {
+    req.flash('success_messages', '成功登出')
+    req.logout()
+    res.redirect('/signin')
   }
 }
 
