@@ -6,6 +6,8 @@ const passport = require('../config/passport')
 const userController = require('../controllers/user-controller')
 const productController = require('../controllers/product-controller')
 const commentController = require('../controllers/comment-controller')
+
+const { authenticated } = require('../middleware/auth')
 //載入錯誤處理
 const { generalErrorHandler } = require('../middleware/error-handler')
 
@@ -13,9 +15,9 @@ router.get('/signup', userController.signUpPage)
 router.post('/signup', userController.signUp)
 router.get('/signin', userController.signInPage)
 router.post('/signin', passport.authenticate('local', { failureRedirect: '/signin', failureFlash: true }), userController.signIn)
-router.get('/products/:id', productController.getProduct)
-router.get('/products', productController.getProducts)
-router.post('/comments', commentController.postComment)
+router.get('/products/:id', authenticated, productController.getProduct)
+router.get('/products', authenticated, productController.getProducts)
+router.post('/comments', authenticated, commentController.postComment)
 router.use('/', (req, res) =>{
   res.redirect('/products')
 })
