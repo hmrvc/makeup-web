@@ -1,4 +1,4 @@
-const { Product } = require('../models')
+const { Product, User, Comment } = require('../models')
 const { getOffset, getPagination } = require('../helpers/pagination-helper')
 const productController = {
   getProducts: (req, res, next) => {
@@ -23,14 +23,19 @@ const productController = {
     })
     .catch(err => next(err))
   },
-  getProduct: (req, res, next) => {
-    return Product.findByPk(req.params.id, {
-      raw: true
-    }).then(product => {
+  getProduct: async (req, res, next) => {
+    try {
+      const product = await Product.findByPk(req.params.id, {
+        include: [
+          { model: Comment, include: User }
+        ]
+      })
       if (!product) throw new Error("Product didn't exist!")
-      res.render('product', { product})
-    })
-    .catch(err => next(err))
+      
+      res.render('product', { product: product.toJSON() })
+    } catch(err) {
+      next(err)
+    }
   }
 }
 
