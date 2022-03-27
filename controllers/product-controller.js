@@ -12,9 +12,11 @@ const productController = {
       offset,
       raw: true
     }).then(products => {
+      const favoritedProductId = req.user && req.user.FavoritedProducts.map(fp => fp.id)
       const data = products.rows.map(p => ({
         ...p,
-        description: p.description ? p.description.substring(0, 50) : null
+        description: p.description ? p.description.substring(0, 50) : null,
+        isFavorited: favoritedProductId.includes(p.id)
       }))
       return res.render('products', {
         products: data,
@@ -27,12 +29,13 @@ const productController = {
     try {
       const product = await Product.findByPk(req.params.id, {
         include: [
-          { model: Comment, include: User }
+          { model: Comment, include: User },
+          { model: User, as: 'FavoritedUsers'}
         ]
       })
       if (!product) throw new Error("Product didn't exist!")
-      
-      res.render('product', { product: product.toJSON() })
+      const isFavorited = product.FavoritedUsers.some(fu => fu.id === req.user.id)
+      res.render('product', { product: product.toJSON(), isFavorited })
     } catch(err) {
       next(err)
     }
