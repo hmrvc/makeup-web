@@ -1,0 +1,27 @@
+<h1>Profile</h1>
+<div class='card mb-3'>
+  <div class='row'>
+    <div class='col-md-8'>
+      <div class='card-body'>
+        <h5 class='card-title'>Name: {{user.name}}</h5>
+        <p class='card-text'>Email: {{user.email}}</p>
+      </div>
+    </div>
+  </div>
+</div> 
+
+<div class='row'>
+  <div class='col-md'>
+    <div class='card-header'>
+      {{count}} 個已評論的商品
+    </div>
+
+    <ul class='d-flex align-items-center'>
+      {{#each comment}}
+      <li class='m-3' style='max-width: 150px; list-style-type: none;'>    
+        <a href='/products/{{this.Product.id}}'>
+          <img class='w-100' src='{{this.Product.image}}' alt='product image'>
+        </a>
+      </li>
+      {{/each}}
+    </ul>

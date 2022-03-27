@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User } = db
+const { User, Comment, Product } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -33,6 +33,26 @@ const userController = {
     req.flash('success_messages', '成功登出')
     req.logout()
     res.redirect('/signin')
+  },
+  getUser: async (req, res, next) => {
+    try {
+      const userId = req.params.id
+      const user = await User.findByPk(userId, { raw: true })
+      const comment = await Comment.findAndCountAll({
+        include: Product,
+        where: { userId},
+        raw: true,
+        nest: true
+      })
+      res.render('user', {
+        user,
+        count: comment.count,
+        comment: comment.rows
+      })
+    } catch(err) {
+      next(err)
+    }
+    
   }
 }
 
