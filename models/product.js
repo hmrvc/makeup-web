@@ -2,6 +2,7 @@
 const {
   Model
 } = require('sequelize');
+const favorite = require('./favorite');
 module.exports = (sequelize, DataTypes) => {
   class Product extends Model {
     /**
@@ -11,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Product.hasMany(models.Comment, { foreignKey: 'productId' })
+      Product.belongsToMany(models.User, {
+        through: models.Favorite, //透過Favorite model
+        foreignKey: 'productId', // 在Favorite 中用 productId 查詢
+        as: 'FavoritedUsers' // 找到的項目
+      })
     }
   }
   Product.init({
