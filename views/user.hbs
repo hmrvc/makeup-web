@@ -25,3 +25,23 @@
       </li>
       {{/each}}
     </ul>
+  </div>
+</div>
+
+<div class='row'>
+  <div class='col-md'>
+    <div class='card-header'>
+      {{favoriteCount}} 個已收藏的商品
+    </div>
+
+    <ul class='d-flex align-items-center'>
+      {{#each favorite}}
+      <li class='m-3' style='max-width: 150px; list-style-type: none;'>    
+        <a href='/products/{{this.Product.id}}'>
+          <img class='w-100' src='{{this.Product.image}}' alt='product image'>
+        </a>
+      </li>
+      {{/each}}
+    </ul>
+  </div>
+</div>

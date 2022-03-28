@@ -1,6 +1,6 @@
 const bcrypt = require('bcryptjs')
 const db = require('../models')
-const { User, Comment, Product } = db
+const { User, Comment, Product, Favorite } = db
 
 const userController = {
   signUpPage: (req, res) => {
@@ -37,17 +37,27 @@ const userController = {
   getUser: async (req, res, next) => {
     try {
       const userId = req.params.id
-      const user = await User.findByPk(userId, { raw: true })
+      const user = await User.findByPk(userId, {
+        raw: true
+      })
       const comment = await Comment.findAndCountAll({
         include: Product,
-        where: { userId},
+        where: { userId },
+        raw: true,
+        nest: true
+      })
+      const favorite = await Favorite.findAndCountAll({
+        include: Product,
+        where: { userId },
         raw: true,
         nest: true
       })
       res.render('user', {
         user,
         count: comment.count,
-        comment: comment.rows
+        comment: comment.rows,
+        favoriteCount: favorite.count,
+        favorite: favorite.rows
       })
     } catch(err) {
       next(err)
